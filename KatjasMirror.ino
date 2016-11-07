@@ -5,8 +5,16 @@
 // At the touch of a button, a motivational message is read from
 // the SD card and displayed on screen.
 
+//#define DEEPSLEEP
+
 #include <SPI.h>
 #include <SD.h>
+
+#include <libmaple/pwr.h>
+#include <libmaple/scb.h>
+
+// These are possibly defined somewhere but I couldn't find them. System Control Register
+#define SCB_SCR_SLEEPDEEP 4       // Controls deepsleep(1) or sleep(0)
 
 #include <Adafruit_GFX_AS.h>      // Core graphics library, with extra fonts.
 #include <Adafruit_ILI9341_STM.h> // STM32 DMA Hardware-specific library
@@ -154,6 +162,22 @@ void interruptFunction() {
   if (!bttnState) bttnState = ON;
 }
 
+// Not sure if really making the Mini sleep or just run
+// really, really slow.
+// Magic runes from:
+// http://forums.leaflabs.com/forums.leaflabs.com/topic543b.html?id=1437
+void sleepMapleMini() 
+{
+  // Clear PDDS and LPDS bits
+  PWR_BASE->CR &= PWR_CR_LPDS | PWR_CR_PDDS;
+
+  // set sleepdeep in the system control register
+  SCB_BASE->SCR |= SCB_SCR_SLEEPDEEP;
+
+  // Now go into stop mode, wake up on interrupt
+  asm("    wfi");
+}
+
 void setup() {  
   unsigned long catchTestTime;
   int pinRead;
@@ -227,9 +251,14 @@ void setup() {
     root = SD.open("/");
     attachInterrupt(bttnPin, interruptFunction, CHANGE);
     Serial.println("Setup complete");
+    if (!testMode) {
+      delay(500);
+      tft.fillScreen(ILI9341_BLACK);
+#ifdef DEEPSLEEP
+      sleepMapleMini();
+#endif
+    }  
   }
-  delay(500);
-  tft.fillScreen(ILI9341_BLACK);  
 }
 
 // Main function 
@@ -251,15 +280,24 @@ void mainFunction() {
     loadDisplayBuffer();
     Serial.print("Message loaded.\n");
 
+#ifdef DEEPSLEEP 
+    delay(500);
+#else
     delay(7500);
+#endif
     
     digitalWrite(tftLedPin, LOW);
     tft.fillScreen(ILI9341_BLACK);
 
     bttnState = OFF;
     Serial.print("End of message display\n");
-  }  
+  }
+
+#ifdef DEEPSLEEP
+  sleepMapleMini();
+#else
   delay(1000);
+#endif
 }
 
 // Test Mode function - only run if the Test Button (user) is pressed within 3 seconds of
