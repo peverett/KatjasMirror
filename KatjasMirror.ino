@@ -2,7 +2,7 @@
 // Designed for Maple Leaf Mini with TFT+SD Reader
 // Katja's Marvellous Magical Motivational Mirror
 //
-// At the touch of a bottom, a motivational message is read from
+// At the touch of a button, a motivational message is read from
 // the SD card and displayed on screen.
 
 #include <SPI.h>
@@ -81,6 +81,7 @@ char fileName[14] = "initial";
 void validQuoteFile(File root, File &entry) {
   char *nptr;
   do {
+    if (entry) entry.close();
     entry = root.openNextFile();
 
     if (!entry) 
@@ -114,8 +115,10 @@ void loadDisplayBuffer() {
  else
    skipCount = (int)((millis() & 0xFFFF) % 5) + 1;
 
-  // Randomly skip some files
+  // Randomly skip some files.
+  // If skipping files, close the previously opened file.
   for (int i=0; i<skipCount; i++) {
+    if (entry) entry.close();
     validQuoteFile(root, entry);
   }
   
