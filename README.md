@@ -22,6 +22,10 @@ Picture/Photo Frame   | 2   | £6.79 | MDF Picture/Photo Frame, 12.5cm Diameter
 One-way mirror film   | 2   | £5.99 | 50 x 100cm - still got loads left
 SD Card (8Mb)         | ?   | ?     | An old one I had lying around
 
+### Sources
+1. Ebay.co.uk
+2. amazon.co.uk
+
 ## Construction and Finished Product
 
 Initial protoboard lash-up showing the startup screen.
