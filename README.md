@@ -6,7 +6,7 @@ My friend Katja loves inspirational quotes. Loves them. All the time, on the
 facebook with the inspirational quotes.
 
 This project is to make a 'magic mirror' - essentially, a small picture frame 
-with one-way mirror glass, a small microcontroller board, TFT display and SD
+with one-way mirror glass, a microcontroller board, TFT display and SD
 memory card that will deliver an inspirational quote at the touch of a button.
 
 ## Hardware
@@ -52,51 +52,52 @@ In deep sleep, the system consumes ~10 mA, which means it should last about a
 week - not that great.
 ![Mirror-6](images/KatjaMirror-6.jpg)
 
-When active, it consumes ~30 to 50 mA. 
+When active, it consumes ~30 to 50 mA. After the first deep sleep it appears 
+the clock runs very slow - which is okay with me for this project. 
 ![Mirror-7](images/KatjaMirror-7.jpg)
 
 ## User Instructions
 
 I used a bit of python to ensure the formatting of the quotes. I wrote one
-great cut and paste quote file and then used the script to split this into 
+great big cut-and-paste quote file and then used the script to split this into 
 correctly formatted individual quote files. 
 
-Each quote file has the name 'FILE####.txt'. 
+Each quote file has the name 'FILE####.txt'. The SD card Ardino library only
+supportw 8.3 filenames. The sketch only selects filenames that start 'FILE',
+everything else is ignored.
 
-The SD card has and SD Ardino library only support 8.3 filenames. The sketch 
-only selects filenames that start 'FILE', everything else is ignored.
-
-The quotes served up are psuedo random. When reading the next quote file in, 
-the code will randomly skip 1 to 5 files so that after switching on the 
-quotes seem a little randomised. 
+The quotes are served up in a psuedo random kind of way. When reading the next
+quote file in, the code will randomly skip 1 to 5 files so that after
+switching on the quotes seem a little randomised. 
 
 Pressing the Maple Mini User button within 3-seconds of the welcome message 
-"Katja's Magical Marvelous Motivational Mirror" will put the system into test
+"Katja's Marvellous Magical Motivational Mirror" will put the system into test
 mode, in which it displays each message one after the other, and indicates the
-quote file name for each as well. Useful for debugging.
+quote file name for each as well. Doesn't use deep sleep in test mode so this
+is useful for debugging and for re-programming. 
 
 After the Welcome message is displayed, the first button press displays an
-initial quote from the Tao of programming, that is hard coded. After that, each
-button press reads a quote file and displays it.
+initial quote from the Tao of Programming, which is hard coded. After that,
+each button press reads a quote file and displays it.
 
 ## Interesting Issues
 
-The font library is very limited and trying to display a character not in the font
-will crash the sketch :( Had to be careful with the German quotes not to use
-any umlats!
+The font library is very limited and trying to display a character not in the
+font will crash the sketch :( Had to be careful with the German quotes not to
+use any umlats!
 
 I glued the button into the frame with Gorilla glue - which got into the button
 (despite it being wrapped in tape) and caused a short - that was annoying and 
 difficult to diagnose. 
 
-Had to make the input button a pulldown input to work reliably - that is probably
-costing some current.
+Had to make the input button a pulldown input to work reliably - that is
+probably costing some current.
 
-Also, the TFT panel logic is on (although not the display LED) - maybe that could
-be powered up each time.
+Also, the tft panel logic is on (although not the display led) - maybe that
+could be powered up each time.
 
-Putting the Maple Mini in to deep sleep and then waking it up again makes it run
-really slow - which is not a problem - some kind of clock setting issue but it
-works for my application so I didn't try and fix it.
+Putting the Maple Mini in to deep sleep and then waking it up again makes it
+run really slow - which is not a problem - some kind of clock setting issue
+but it works for my application so I didn't try and fix it.
 
 
